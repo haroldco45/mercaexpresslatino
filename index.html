@@ -9,7 +9,6 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; color: var(--secondary); }
         
         .header { text-align: center; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        /* REEMPLAZA "logo.png" por el nombre exacto de tu archivo en el repositorio */
         .logo { max-width: 180px; height: auto; margin-bottom: 10px; }
         
         .time-display { font-size: 1.1em; font-weight: bold; color: var(--primary); background: #fff1f2; padding: 8px; border-radius: 50px; display: inline-block; margin: 10px 0; border: 1px solid var(--primary); }
@@ -20,18 +19,17 @@
         .product-info span { color: #666; font-weight: bold; }
         
         .controls { display: flex; align-items: center; gap: 15px; }
-        .btn-qty { background: var(--primary); color: white; border: none; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; font-size: 20px; font-weight: bold; transition: 0.2s; }
-        .btn-qty:active { transform: scale(0.9); }
+        .btn-qty { background: var(--primary); color: white; border: none; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; font-size: 20px; font-weight: bold; }
         .qty-val { font-size: 1.2em; font-weight: bold; min-width: 20px; text-align: center; }
 
-        .form-group { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .form-group { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .form-group h3 { margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
+        textarea { height: 80px; resize: none; }
         
         .btn-send { width: 100%; background: var(--accent); color: white; border: none; font-weight: bold; padding: 18px; font-size: 18px; border-radius: 15px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
-        .btn-send:hover { background: #1eb954; }
 
-        .footer { text-align: center; margin-top: 40px; padding-bottom: 20px; color: #888; border-top: 1px solid #ddd; pt: 20px; }
+        .footer { text-align: center; margin-top: 40px; padding-bottom: 20px; color: #888; border-top: 1px solid #ddd; padding-top: 20px; }
         .map-link { color: #3182ce; text-decoration: none; font-weight: bold; display: block; margin-top: 8px; }
     </style>
 </head>
@@ -42,18 +40,28 @@
     <h2 style="margin:5px 0;">Merca Express Latino</h2>
     <div class="time-display" id="londonTime">Cargando hora de Londres...</div>
     <p style="margin:5px 0; color: #555;">📍 705-707 Seven Sisters Road, London N15 5LA</p>
-    <a href="https://www.google.com/maps/search/?api=1&query=705+707+seven+sisters+road+n15+5la+London" target="_blank" class="map-link">Ver ubicación en Google Maps</a>
+    <a href="https://www.google.com/maps?q=705-707+Seven+Sisters+Road,+London+N15+5LA" target="_blank" class="map-link">Ver ubicación en Google Maps</a>
 </div>
 
 <div id="productList">
     </div>
 
 <div class="form-group">
-    <h3>Finalizar Pedido</h3>
-    <input type="text" id="nombre" placeholder="Tu Nombre Completo">
-    <input type="text" id="direccion" placeholder="Dirección de Entrega en Londres">
-    <input type="tel" id="celular" placeholder="Tu número de WhatsApp">
-    <button class="btn-send" onclick="enviarPedido()">🚀 Enviar Factura a WhatsApp</button>
+    <h3>Datos del Cliente</h3>
+    <input type="text" id="nombre" placeholder="Nombre completo">
+    <input type="text" id="direccion" placeholder="Dirección de entrega">
+    <input type="tel" id="celular" placeholder="Tu número de celular">
+    
+    <h3>Detalles del Pedido</h3>
+    <select id="metodoPago">
+        <option value="" disabled selected>Selecciona forma de pago</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Transferencia">Transferencia Bancaria</option>
+        <option value="Tarjeta">Tarjeta (en tienda/entrega)</option>
+    </select>
+    <textarea id="observaciones" placeholder="¿Alguna nota especial para tu pedido?"></textarea>
+    
+    <button class="btn-send" onclick="enviarPedido()">🚀 Enviar Pedido al WhatsApp</button>
 </div>
 
 <div class="footer">
@@ -64,25 +72,16 @@
     const productos = [
         { id: 1, nombre: "Pony Malta 330ml", precio: 1.50 },
         { id: 2, nombre: "Postobón Manzana 2L", precio: 3.80 },
-        { id: 3, nombre: "Chocoramo Original", precio: 1.30 },
+        { id: 3, nombre: "Chocoramo", precio: 1.30 },
         { id: 4, nombre: "Arequipe Alpina", precio: 3.50 },
         { id: 5, nombre: "Galletas Festival", precio: 0.80 },
-        { id: 6, nombre: "Bon Bon Bum (Paquete)", precio: 4.50 }
+        { id: 6, nombre: "Café Sello Rojo 250g", precio: 4.20 }
     ];
 
     let carrito = {};
 
     function updateTime() {
-        const options = { 
-            timeZone: 'Europe/London', 
-            hour: '2-digit', 
-            minute: '2-digit', 
-            second: '2-digit', 
-            hour12: true,
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long'
-        };
+        const options = { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit', hour12: true };
         const formatter = new Intl.DateTimeFormat('es-ES', options);
         document.getElementById('londonTime').innerText = "Londres: " + formatter.format(new Date());
     }
@@ -116,46 +115,41 @@
         const nombre = document.getElementById('nombre').value;
         const direccion = document.getElementById('direccion').value;
         const celular = document.getElementById('celular').value;
+        const pago = document.getElementById('metodoPago').value;
+        const obs = document.getElementById('observaciones').value;
 
-        if (!nombre || !direccion || !celular) {
-            alert("Por favor, completa todos los campos.");
-            return;
-        }
+        if (!nombre || !direccion || !pago) return alert("Por favor, completa nombre, dirección y forma de pago.");
 
         let mensaje = `*🧾 FACTURA DE PEDIDO*\n`;
-        mensaje += `*Tienda:* Merca Express Latino\n`;
-        mensaje += `*Fecha:* ${new Date().toLocaleDateString('es-ES')}\n`;
         mensaje += `----------------------------\n`;
         mensaje += `*Cliente:* ${nombre}\n`;
         mensaje += `*Dirección:* ${direccion}\n`;
-        mensaje += `*Tel:* ${celular}\n\n`;
+        mensaje += `*Celular:* ${celular}\n`;
+        mensaje += `*Pago:* ${pago}\n`;
+        if(obs) mensaje += `*Notas:* ${obs}\n`;
+        mensaje += `----------------------------\n`;
         mensaje += `*PRODUCTOS:*\n`;
 
         let total = 0;
-        let tieneProductos = false;
-
+        let items = false;
         productos.forEach(p => {
             const cant = carrito[p.id] || 0;
             if (cant > 0) {
                 const subtotal = p.precio * cant;
-                mensaje += `✅ ${p.nombre} (x${cant}) - £${subtotal.toFixed(2)}\n`;
+                mensaje += `• ${p.nombre} x${cant} (£${subtotal.toFixed(2)})\n`;
                 total += subtotal;
-                tieneProductos = true;
+                items = true;
             }
         });
 
-        if (!tieneProductos) {
-            alert("Selecciona al menos un producto.");
-            return;
-        }
+        if (!items) return alert("El carrito está vacío.");
 
         mensaje += `\n*TOTAL A PAGAR: £${total.toFixed(2)}*\n`;
         mensaje += `----------------------------\n`;
         mensaje += `_App desarrollada por Vibras Positivas_`;
 
-        // Número de la tienda proporcionado: +44 7542 455556
-        const url = `https://wa.me/447542455556?text=${encodeURIComponent(mensaje)}`;
-        window.open(url, '_blank');
+        // Nuevo número corregido: +44 7983 534517
+        window.open(`https://wa.me/447983534517?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
 
     renderProducts();
