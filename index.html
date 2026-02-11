@@ -1,1 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merca Express Latino - Pedidos</title>
+    <style>
+        :root { --primary: #e63946; --secondary: #1d3557; --light: #f1faee; }
+        body { font-family: 'Arial', sans-serif; background-color: var(--light); margin: 0; padding: 20px; color: var(--secondary); }
+        .header { text-align: center; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .time-display { font-weight: bold; color: var(--primary); margin: 10px 0; }
+        .container { max-width: 600px; margin: 20px auto; }
+        .product-card { background: white; display: flex; align-items: center; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .product-info { flex-grow: 1; }
+        .controls { display: flex; align-items: center; gap: 10px; }
+        button { background: var(--primary); color: white; border: none; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 18px; }
+        .form-group { background: white; padding: 20px; border-radius: 15px; margin-top: 20px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .btn-send { width: 100%; background: #25d366; font-weight: bold; padding: 15px; font-size: 16px; border-radius: 10px; }
+        .footer { text-align: center; margin-top: 30px; font-size: 0.9em; color: #666; }
+        .map-link { color: var(--primary); text-decoration: none; display: block; margin-top: 10px; font-size: 0.8em; }
+    </style>
+</head>
+<body>
 
+<div class="header">
+    <img src="https://vibraspositivas.com/logo.png" alt="Logo" style="height: 60px;"> <h1>Merca Express Latino</h1>
+    <div class="time-display" id="londonTime">Cargando hora de Londres...</div>
+    <p>705-707 Seven Sisters Road, Londres</p>
+    <a href="https://www.google.com/maps/search/?api=1&query=705+707+Seven+Sisters+Road+London+N15+5LA" target="_blank" class="map-link">📍 Ver ubicación en el mapa</a>
+</div>
+
+<div class="container" id="productList">
+    </div>
+
+<div class="container form-group">
+    <h3>Datos del Cliente</h3>
+    <input type="text" id="nombre" placeholder="Nombre completo">
+    <input type="text" id="direccion" placeholder="Dirección de entrega">
+    <input type="tel" id="celular" placeholder="Número de celular">
+    <button class="btn-send" onclick="enviarPedido()">Enviar Pedido por WhatsApp</button>
+</div>
+
+<div class="footer">
+    App desarrollada por <strong>Vibras Positivas</strong>
+</div>
+
+<script>
+    const productos = [
+        { id: 1, nombre: "Pony Malta 330ml", precio: 1.50 },
+        { id: 2, nombre: "Postobón Manzana", precio: 1.50 },
+        { id: 3, nombre: "Chocoramo", precio: 1.20 },
+        { id: 4, nombre: "Arequipe Alpina", precio: 3.50 },
+        { id: 5, nombre: "Galletas Festival", precio: 0.80 }
+    ];
+
+    let carrito = {};
+
+    function updateTime() {
+        const options = { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const formatter = new Intl.DateTimeFormat('es-ES', options);
+        document.getElementById('londonTime').innerText = "Hora Londres: " + formatter.format(new Date());
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    function renderProducts() {
+        const list = document.getElementById('productList');
+        list.innerHTML = productos.map(p => `
+            <div class="product-card">
+                <div class="product-info">
+                    <strong>${p.nombre}</strong><br>
+                    <span>£${p.precio.toFixed(2)}</span>
+                </div>
+                <div class="controls">
+                    <button onclick="cambiarCant(${p.id}, -1)">-</button>
+                    <span id="cant-${p.id}">0</span>
+                    <button onclick="cambiarCant(${p.id}, 1)">+</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function cambiarCant(id, delta) {
+        carrito[id] = (carrito[id] || 0) + delta;
+        if (carrito[id] < 0) carrito[id] = 0;
+        document.getElementById(`cant-${id}`).innerText = carrito[id];
+    }
+
+    function enviarPedido() {
+        const nombre = document.getElementById('nombre').value;
+        const direccion = document.getElementById('direccion').value;
+        const celular = document.getElementById('celular').value;
+
+        if (!nombre || !direccion) return alert("Por favor completa tus datos");
+
+        let mensaje = `*FACTURA - MERCA EXPRESS LATINO*\n`;
+        mensaje += `Fecha: ${new Date().toLocaleDateString()}\n`;
+        mensaje += `----------------------------\n`;
+        mensaje += `*Cliente:* ${nombre}\n`;
+        mensaje += `*Dirección:* ${direccion}\n`;
+        mensaje += `*Celular:* ${celular}\n\n`;
+        mensaje += `*PEDIDO:*\n`;
+
+        let total = 0;
+        Object.keys(carrito).forEach(id => {
+            if (carrito[id] > 0) {
+                const p = productos.find(x => x.id == id);
+                const subtotal = p.precio * carrito[id];
+                mensaje += `- ${p.nombre} x${carrito[id]} (£${subtotal.toFixed(2)})\n`;
+                total += subtotal;
+            }
+        });
+
+        if (total === 0) return alert("El carrito está vacío");
+
+        mensaje += `\n*TOTAL A PAGAR: £${total.toFixed(2)}*\n`;
+        mensaje += `----------------------------\n`;
+        mensaje += `Desarrollado por Vibras Positivas`;
+
+        const win = window.open(`https://wa.me/447542455556?text=${encodeURIComponent(mensaje)}`, '_blank');
+    }
+
+    renderProducts();
+</script>
+
+</body>
+</html>
