@@ -9,81 +9,78 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; color: var(--secondary); }
         
         .header { text-align: center; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .logo { max-width: 180px; height: auto; margin-bottom: 10px; }
+        .logo { max-width: 220px; height: auto; margin-bottom: 10px; border-radius: 10px; }
         
-        .time-display { font-size: 1.1em; font-weight: bold; color: var(--primary); background: #fff1f2; padding: 8px; border-radius: 50px; display: inline-block; margin: 10px 0; border: 1px solid var(--primary); }
+        .time-display { font-size: 1.1em; font-weight: bold; color: var(--primary); background: #fff1f2; padding: 8px 15px; border-radius: 50px; display: inline-block; margin: 10px 0; border: 1px solid var(--primary); }
         
-        .product-card { background: white; display: flex; align-items: center; padding: 15px; margin-bottom: 12px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
-        .product-info { flex-grow: 1; }
-        .product-info strong { font-size: 1.1em; display: block; }
-        .product-info span { color: #666; font-weight: bold; }
+        .product-card { background: white; display: flex; align-items: center; padding: 12px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); margin-bottom: 10px; }
+        .product-info { flex-grow: 1; padding-left: 10px; }
+        .product-info strong { font-size: 1em; display: block; }
+        .product-info span { color: var(--primary); font-weight: bold; }
         
-        .controls { display: flex; align-items: center; gap: 15px; }
-        .btn-qty { background: var(--primary); color: white; border: none; width: 35px; height: 35px; border-radius: 10px; cursor: pointer; font-size: 20px; font-weight: bold; }
-        .qty-val { font-size: 1.2em; font-weight: bold; min-width: 20px; text-align: center; }
+        .controls { display: flex; align-items: center; gap: 10px; }
+        .btn-qty { background: var(--primary); color: white; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 18px; }
+        .qty-val { font-size: 1.1em; font-weight: bold; min-width: 20px; text-align: center; }
 
         .form-group { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .form-group h3 { margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
-        textarea { height: 80px; resize: none; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
         
-        .btn-send { width: 100%; background: var(--accent); color: white; border: none; font-weight: bold; padding: 18px; font-size: 18px; border-radius: 15px; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+        .btn-send { width: 100%; background: var(--accent); color: white; border: none; font-weight: bold; padding: 18px; font-size: 18px; border-radius: 15px; cursor: pointer; margin-top: 10px; }
 
-        .footer { text-align: center; margin-top: 40px; padding-bottom: 20px; color: #888; border-top: 1px solid #ddd; padding-top: 20px; }
-        .map-link { color: #3182ce; text-decoration: none; font-weight: bold; display: block; margin-top: 8px; }
+        .footer { text-align: center; margin-top: 30px; padding: 20px; color: #888; font-size: 0.9em; border-top: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <img src="logo.png" alt="Vibras Positivas" class="logo">
-    <h2 style="margin:5px 0;">Merca Express Latino</h2>
-    <div class="time-display" id="londonTime">Cargando hora de Londres...</div>
-    <p style="margin:5px 0; color: #555;">📍 705-707 Seven Sisters Road, London N15 5LA</p>
-    <a href="https://www.google.com/maps?q=705-707+Seven+Sisters+Road,+London+N15+5LA" target="_blank" class="map-link">Ver ubicación en Google Maps</a>
+    <img src="marca-expres-latino.PNG" alt="Merca Express Latino" class="logo">
+    <div class="time-display" id="londonTime">Cargando hora...</div>
+    <p><strong>705-707 Seven Sisters Road, N15 5LA</strong></p>
 </div>
 
-<div id="productList">
-    </div>
+<div id="productList"></div>
 
 <div class="form-group">
-    <h3>Datos del Cliente</h3>
+    <h3>📋 Datos del Cliente</h3>
     <input type="text" id="nombre" placeholder="Nombre completo">
     <input type="text" id="direccion" placeholder="Dirección de entrega">
     <input type="tel" id="celular" placeholder="Tu número de celular">
     
-    <h3>Detalles del Pedido</h3>
+    <h3>💳 Pago y Notas</h3>
     <select id="metodoPago">
         <option value="" disabled selected>Selecciona forma de pago</option>
         <option value="Efectivo">Efectivo</option>
-        <option value="Transferencia">Transferencia Bancaria</option>
-        <option value="Tarjeta">Tarjeta (en tienda/entrega)</option>
+        <option value="Transferencia">Transferencia</option>
+        <option value="Tarjeta">Tarjeta al recibir</option>
     </select>
-    <textarea id="observaciones" placeholder="¿Alguna nota especial para tu pedido?"></textarea>
+    <textarea id="observaciones" placeholder="Observaciones adicionales..."></textarea>
     
-    <button class="btn-send" onclick="enviarPedido()">🚀 Enviar Pedido al WhatsApp</button>
+    <button class="btn-send" onclick="enviarPedido()">🚀 Enviar Pedido por WhatsApp</button>
 </div>
 
 <div class="footer">
-    App desarrollada por <strong>Vibras Positivas</strong>
+    App desarrollada por <strong>Vibras Positivas © Todos los derechos reservados</strong>
 </div>
 
 <script>
     const productos = [
-        { id: 1, nombre: "Pony Malta 330ml", precio: 1.50 },
-        { id: 2, nombre: "Postobón Manzana 2L", precio: 3.80 },
-        { id: 3, nombre: "Chocoramo", precio: 1.30 },
-        { id: 4, nombre: "Arequipe Alpina", precio: 3.50 },
-        { id: 5, nombre: "Galletas Festival", precio: 0.80 },
-        { id: 6, nombre: "Café Sello Rojo 250g", precio: 4.20 }
+        { id: 1, nombre: "Maíz Blanco El Mexicano", precio: 2.50 },
+        { id: 2, nombre: "Takis Fuego", precio: 1.20 },
+        { id: 3, nombre: "Harina PAN Amarilla", precio: 2.10 },
+        { id: 4, nombre: "Harina Maseca 1kg", precio: 1.95 },
+        { id: 5, nombre: "Tortillas de Maíz Nagual", precio: 3.20 },
+        { id: 6, nombre: "Salsa Valentina", precio: 1.50 },
+        { id: 7, nombre: "Frijoles La Costeña", precio: 1.80 },
+        { id: 8, nombre: "Ate de Guayaba", precio: 2.40 },
+        { id: 9, nombre: "Jarritos (Sabores)", precio: 1.75 },
+        { id: 10, nombre: "Tajín Clásico", precio: 3.50 }
     ];
 
     let carrito = {};
 
     function updateTime() {
         const options = { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit', hour12: true };
-        const formatter = new Intl.DateTimeFormat('es-ES', options);
-        document.getElementById('londonTime').innerText = "Londres: " + formatter.format(new Date());
+        document.getElementById('londonTime').innerText = "Londres: " + new Intl.DateTimeFormat('es-ES', options).format(new Date());
     }
     setInterval(updateTime, 1000);
     updateTime();
@@ -114,41 +111,31 @@
     function enviarPedido() {
         const nombre = document.getElementById('nombre').value;
         const direccion = document.getElementById('direccion').value;
-        const celular = document.getElementById('celular').value;
         const pago = document.getElementById('metodoPago').value;
         const obs = document.getElementById('observaciones').value;
 
-        if (!nombre || !direccion || !pago) return alert("Por favor, completa nombre, dirección y forma de pago.");
+        if (!nombre || !direccion || !pago) return alert("Completa los datos obligatorios.");
 
         let mensaje = `*🧾 FACTURA DE PEDIDO*\n`;
-        mensaje += `----------------------------\n`;
-        mensaje += `*Cliente:* ${nombre}\n`;
-        mensaje += `*Dirección:* ${direccion}\n`;
-        mensaje += `*Celular:* ${celular}\n`;
-        mensaje += `*Pago:* ${pago}\n`;
+        mensaje += `*Cliente:* ${nombre}\n*Dirección:* ${direccion}\n*Pago:* ${pago}\n`;
         if(obs) mensaje += `*Notas:* ${obs}\n`;
         mensaje += `----------------------------\n`;
-        mensaje += `*PRODUCTOS:*\n`;
 
         let total = 0;
-        let items = false;
         productos.forEach(p => {
-            const cant = carrito[p.id] || 0;
-            if (cant > 0) {
-                const subtotal = p.precio * cant;
-                mensaje += `• ${p.nombre} x${cant} (£${subtotal.toFixed(2)})\n`;
-                total += subtotal;
-                items = true;
+            if (carrito[p.id] > 0) {
+                const sub = p.precio * carrito[p.id];
+                mensaje += `• ${p.nombre} (x${carrito[p.id]}) - £${sub.toFixed(2)}\n`;
+                total += sub;
             }
         });
 
-        if (!items) return alert("El carrito está vacío.");
+        if (total === 0) return alert("Añade productos.");
 
-        mensaje += `\n*TOTAL A PAGAR: £${total.toFixed(2)}*\n`;
+        mensaje += `\n*TOTAL: £${total.toFixed(2)}*\n`;
         mensaje += `----------------------------\n`;
-        mensaje += `_App desarrollada por Vibras Positivas_`;
+        mensaje += `_Desarrollado por Vibras Positivas ©_`;
 
-        // Nuevo número corregido: +44 7983 534517
         window.open(`https://wa.me/447983534517?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
 
