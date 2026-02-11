@@ -8,6 +8,10 @@
         :root { --primary: #e63946; --secondary: #1d3557; --accent: #25d366; --light: #f8f9fa; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 15px; color: var(--secondary); }
         
+        /* Capa de bloqueo por vencimiento */
+        #expired-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 9999; text-align: center; padding-top: 100px; }
+        .expired-box { background: #fff1f2; border: 2px solid var(--primary); display: inline-block; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+
         .header { text-align: center; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .logo { max-width: 220px; height: auto; margin-bottom: 10px; border-radius: 10px; }
         
@@ -26,54 +30,79 @@
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
         
         .btn-send { width: 100%; background: var(--accent); color: white; border: none; font-weight: bold; padding: 18px; font-size: 18px; border-radius: 15px; cursor: pointer; margin-top: 10px; }
-
         .footer { text-align: center; margin-top: 30px; padding: 20px; color: #888; font-size: 0.9em; border-top: 1px solid #ddd; }
     </style>
 </head>
-<body>
+<body onload="checkSubscription()">
 
-<div class="header">
-    <img src="marca-expres-latino.PNG" alt="Merca Express Latino" class="logo">
-    <div class="time-display" id="londonTime">Cargando hora...</div>
-    <p><strong>705-707 Seven Sisters Road, N15 5LA</strong></p>
+<div id="expired-overlay">
+    <div class="expired-box">
+        <h1 style="color: var(--primary);">⚠️ Acceso Suspendido</h1>
+        <p>La licencia de esta aplicación ha vencido.</p>
+        <p>Por favor, contacte con el soporte técnico para renovar el servicio.</p>
+        <p><strong>Vibras Positivas ©</strong></p>
+    </div>
 </div>
 
-<div id="productList"></div>
+<div id="main-content">
+    <div class="header">
+        <img src="marca-expres-latino.PNG" alt="Merca Express Latino" class="logo">
+        <div class="time-display" id="londonTime">Cargando hora...</div>
+        <p><strong>705-707 Seven Sisters Road, N15 5LA</strong></p>
+    </div>
 
-<div class="form-group">
-    <h3>📋 Datos del Cliente</h3>
-    <input type="text" id="nombre" placeholder="Nombre completo">
-    <input type="text" id="direccion" placeholder="Dirección de entrega">
-    <input type="tel" id="celular" placeholder="Tu número de celular">
-    
-    <h3>💳 Pago y Notas</h3>
-    <select id="metodoPago">
-        <option value="" disabled selected>Selecciona forma de pago</option>
-        <option value="Efectivo">Efectivo</option>
-        <option value="Transferencia">Transferencia</option>
-        <option value="Tarjeta">Tarjeta al recibir</option>
-    </select>
-    <textarea id="observaciones" placeholder="Observaciones adicionales..."></textarea>
-    
-    <button class="btn-send" onclick="enviarPedido()">🚀 Enviar Pedido por WhatsApp</button>
-</div>
+    <div id="productList"></div>
 
-<div class="footer">
-    App desarrollada por <strong>Vibras Positivas © Todos los derechos reservados</strong>
+    <div class="form-group">
+        <h3>📋 Datos del Cliente</h3>
+        <input type="text" id="nombre" placeholder="Nombre completo">
+        <input type="text" id="direccion" placeholder="Dirección de entrega">
+        <input type="tel" id="celular" placeholder="Tu número de celular">
+        
+        <h3>💳 Pago y Notas</h3>
+        <select id="metodoPago">
+            <option value="" disabled selected>Selecciona forma de pago</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Transferencia">Transferencia</option>
+            <option value="Tarjeta">Tarjeta al recibir</option>
+        </select>
+        <textarea id="observaciones" placeholder="Ej: Dejar el pedido en la recepción..."></textarea>
+        
+        <button class="btn-send" onclick="enviarPedido()">🚀 Enviar Pedido por WhatsApp</button>
+    </div>
+
+    <div class="footer">
+        App desarrollada por <strong>Vibras Positivas © Todos los derechos reservados</strong><br>
+        <small id="sub-info"></small>
+    </div>
 </div>
 
 <script>
+    // CONFIGURACIÓN DE VENCIMIENTO: 11 de Abril de 2026 (Mes 3 en JS es Abril)
+    const FECHA_VENCIMIENTO = new Date(2026, 3, 11); 
+
+    function checkSubscription() {
+        const hoy = new Date();
+        const info = document.getElementById('sub-info');
+        info.innerText = "Suscripción activa hasta: " + FECHA_VENCIMIENTO.toLocaleDateString();
+
+        if (hoy > FECHA_VENCIMIENTO) {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('expired-overlay').style.display = 'block';
+        }
+    }
+
     const productos = [
         { id: 1, nombre: "Maíz Blanco El Mexicano", precio: 2.50 },
-        { id: 2, nombre: "Takis Fuego", precio: 1.20 },
+        { id: 2, nombre: "Takis Fuego Large", precio: 1.20 },
         { id: 3, nombre: "Harina PAN Amarilla", precio: 2.10 },
         { id: 4, nombre: "Harina Maseca 1kg", precio: 1.95 },
         { id: 5, nombre: "Tortillas de Maíz Nagual", precio: 3.20 },
-        { id: 6, nombre: "Salsa Valentina", precio: 1.50 },
-        { id: 7, nombre: "Frijoles La Costeña", precio: 1.80 },
-        { id: 8, nombre: "Ate de Guayaba", precio: 2.40 },
-        { id: 9, nombre: "Jarritos (Sabores)", precio: 1.75 },
-        { id: 10, nombre: "Tajín Clásico", precio: 3.50 }
+        { id: 6, nombre: "Salsa Valentina Picante", precio: 1.50 },
+        { id: 7, nombre: "Frijoles Negros La Costeña", precio: 1.80 },
+        { id: 8, nombre: "Ate de Guayaba 240g", precio: 2.40 },
+        { id: 9, nombre: "Jarritos (Mango/Guava)", precio: 1.75 },
+        { id: 10, nombre: "Tajín Clásico 142g", precio: 3.50 }
     ];
 
     let carrito = {};
@@ -111,31 +140,40 @@
     function enviarPedido() {
         const nombre = document.getElementById('nombre').value;
         const direccion = document.getElementById('direccion').value;
+        const celular = document.getElementById('celular').value;
         const pago = document.getElementById('metodoPago').value;
         const obs = document.getElementById('observaciones').value;
 
-        if (!nombre || !direccion || !pago) return alert("Completa los datos obligatorios.");
+        if (!nombre || !direccion || !pago) return alert("Por favor, rellena los campos de Nombre, Dirección y Pago.");
 
-        let mensaje = `*🧾 FACTURA DE PEDIDO*\n`;
-        mensaje += `*Cliente:* ${nombre}\n*Dirección:* ${direccion}\n*Pago:* ${pago}\n`;
-        if(obs) mensaje += `*Notas:* ${obs}\n`;
+        let mensaje = `*🧾 FACTURA DE PEDIDO - MERCA EXPRESS*\n`;
         mensaje += `----------------------------\n`;
+        mensaje += `*Cliente:* ${nombre}\n`;
+        mensaje += `*Dirección:* ${direccion}\n`;
+        mensaje += `*Celular:* ${celular}\n`;
+        mensaje += `*Forma de Pago:* ${pago}\n`;
+        if(obs) mensaje += `*Observaciones:* ${obs}\n`;
+        mensaje += `----------------------------\n`;
+        mensaje += `*PRODUCTOS:*\n`;
 
         let total = 0;
+        let itemsCount = 0;
         productos.forEach(p => {
             if (carrito[p.id] > 0) {
                 const sub = p.precio * carrito[p.id];
                 mensaje += `• ${p.nombre} (x${carrito[p.id]}) - £${sub.toFixed(2)}\n`;
                 total += sub;
+                itemsCount++;
             }
         });
 
-        if (total === 0) return alert("Añade productos.");
+        if (itemsCount === 0) return alert("Debes agregar al menos un producto al carrito.");
 
-        mensaje += `\n*TOTAL: £${total.toFixed(2)}*\n`;
+        mensaje += `\n*TOTAL FINAL: £${total.toFixed(2)}*\n`;
         mensaje += `----------------------------\n`;
-        mensaje += `_Desarrollado por Vibras Positivas ©_`;
+        mensaje += `_App desarrollada por Vibras Positivas ©_`;
 
+        // Conservando el número solicitado: +44 7983 534517
         window.open(`https://wa.me/447983534517?text=${encodeURIComponent(mensaje)}`, '_blank');
     }
 
